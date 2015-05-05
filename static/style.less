@@ -154,9 +154,10 @@
       // margin: 6px 22px;
       padding: (@info-height - @info-icon-size) / 2 0px;
       text-align: center;
-      opacity: 0.7;
+      // opacity: 0.7;
       z-index: 1;
       .circle {
+      	opacity: 0.7;
         position: absolute;
         background: fade(@info-icon-bg, 50%);
         border-radius: 50%;
@@ -167,6 +168,15 @@
         height: @info-circle-size;
         z-index: 0;
       }
+			.octicon {
+				position: absolute;
+				padding: 0px 1px;
+      	opacity: 0.7;
+				// Note: IE sets left to 0px by default while Chrome and Firefox do not.
+				// This normalizes cross browser behaviours
+				left: 0px;
+				margin-left: @header-height / 2 - @info-icon-size / 2;
+			}
     }
     .status {
       line-height: @info-icon-size;
