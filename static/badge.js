@@ -238,6 +238,7 @@
       }
       var lastCommit = commits[0];
       var delta = current;//commits.length - current - 1;
+      var finalIcon = "octicon-history";
       this.info.statusText.innerHTML = delta > 0 ? ", " + delta + " commits behind" : ", up-to-date";
 
       this.commits.afterEntry.style.display = 'none';
@@ -247,6 +248,7 @@
 
       if (delta == 0) {
         this.commits.upToDateEntry.style.display = 'block';
+        finalIcon = "octicon-check";
       } else if (delta == 1) {
         this.commits.latestCommitEntry.style.display = 'block';
       } else {
@@ -261,7 +263,7 @@
       this.updateCommitLink(this.commits.currentCommitLink, currentCommit);
       this.updateCommitLink(this.commits.latestCommitLink, lastCommit);
 
-      this.toggleSyncAnimation();
+      this.toggleSyncAnimation(finalIcon);
 
       if (this.autoExpand && this.commits.className !== "commits") {
         this.toggleFold();
@@ -278,9 +280,10 @@
     this.commits.className = this.commits.className === "commits" ? "commits fold" : "commits";
   }
 
-  Badge.prototype.toggleSyncAnimation = function() {
+  Badge.prototype.toggleSyncAnimation = function(finalIcon) {
+    finalIcon = finalIcon || "octicon-git-commit";
     var current = this.info.icon.className;
-    this.info.icon.className = current === "octicon octicon-git-commit" ? "octicon octicon-sync spinner" : "octicon octicon-git-commit"
+    this.info.icon.className = current === "octicon octicon-sync spinner" ? ("octicon " + finalIcon) : "octicon octicon-sync spinner";
   }
 
   var API_BASE = "https://api.github.com"
@@ -297,7 +300,12 @@
     });
     cachedAjax(commitsUrl, function(err, data) {
       // console.log(data);
-      that.updateCommits(data);
+      if (err && !data) {
+        that.info.statusText.innerHTML = ", something is wrong";
+        that.toggleSyncAnimation('octicon-x');
+      } else {
+        that.updateCommits(data);
+      }
     })
   }
 
