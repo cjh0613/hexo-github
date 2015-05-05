@@ -1,13 +1,16 @@
 (function (ns, $) {
-  function loadStyle(url) {
+  ns.LOADED_STYLES = ns.LOADED_STYLES || {};
+  ns.loadStyle = function(url) {
+    if (ns.LOADED_STYLES[url]) {
+      return;
+    }
     var link = document.createElement("link");
     link.setAttribute("rel", "stylesheet");
     link.setAttribute("type", "text/css");
     link.setAttribute("href", url);
     document.getElementsByTagName("head")[0].appendChild(link);
+    ns.LOADED_STYLES[url] = true;
   }
-
-  loadStyle('style.css')
 
   function $$(tag, classList) {
     var elem = document.createElement(tag);
@@ -116,13 +119,13 @@
     request.open('GET', url, true);
 
     if (etag) {
-      console.log("Request with ETag: " + etag);
+      // console.log("Request with ETag: " + etag);
       request.setRequestHeader('If-None-Match', etag);
     }
 
     request.onload = function() {
       var newEtag = request.getResponseHeader('ETag');
-      console.log(newEtag);
+      // console.log(newEtag);
       console.log("Rate limit remaing: " + request.getResponseHeader('X-RateLimit-Remaining'));
       if (request.status == 304) {
         // No error, no data == remote not updated
@@ -155,7 +158,7 @@
 
   function cachedAjax(url, cb) {
     var cache = JSON.parse(localStorage.getItem(url)) || {data: null, etag: null};
-    console.log(cache);
+    // console.log(cache);
     // BUG: commits after latest 100 will not be found, need to traverse pages
     ajax(url + "?per_page=100", cache.etag, function(next, err, data) {
       if (err) {
@@ -285,7 +288,7 @@
     this.toggleSyncAnimation();
     var that = this;
     cachedAjax(userUrl, function(err, data) {
-      console.log(data);
+      // console.log(data);
       that.header.avatar.src = data.avatar_url;
     });
     cachedAjax(commitsUrl, function(err, data) {
