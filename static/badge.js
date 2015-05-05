@@ -176,11 +176,12 @@
     });
   }
 
-  function Badge(sel, user, repo, commit) {
+  function Badge(sel, user, repo, commit, autoExpand) {
     this.container = $(sel);
     this.user = user;
     this.repo = repo;
     this.commit = commit;
+    this.autoExpand = autoExpand ? true : false;
     this.el = $$('div', ['github-badge']);
     this.info = $$('div', ['info']);
     this.header = $$('div', ['header']);
@@ -253,7 +254,6 @@
         this.commits.latestCommitEntry.style.display = 'block';
       }
 
-      this.commits.className = "commits";
       this.commits.beforeCounter.innerHTML = commits.length - current - 1;
       this.commits.afterCounter.innerHTML = delta - 1;
 
@@ -262,6 +262,10 @@
       this.updateCommitLink(this.commits.latestCommitLink, lastCommit);
 
       this.toggleSyncAnimation();
+
+      if (this.autoExpand && this.commits.className !== "commits") {
+        this.toggleFold();
+      }
   }
 
   Badge.prototype.toggleAvatar = function() {

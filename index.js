@@ -42,7 +42,7 @@ function tryParseUrl(url) {
   }
 }
 
-function generateSnippet(user, repo, commit, width) {
+function generateSnippet(user, repo, commit, autoExpand, width) {
   var id = "badge-container-" + user + "-" + repo + "-" + commit;
   var src = [
     '<div id="' + id + '" style="width: ' + (width ? width : '300px') + '"></div>',
@@ -50,12 +50,12 @@ function generateSnippet(user, repo, commit, width) {
     '<script type="text/javascript">',
     '  loadStyle("/hexo-github/style.css");',
     '  loadStyle("/hexo-github/octicons/octicons.css");',
-    '  new Badge("#' + id + '", "' + user + '", "' + repo + '", "' + commit + '")',
+    '  new Badge("#' + id + '", "' + user + '", "' + repo + '", "' + commit + '", ' + autoExpand + ')',
     '</script>'
   ].join("");
   return src;
 }
 
 hexo.extend.tag.register('github', function(args) {
-  return generateSnippet(args[0], args[1], args[2], args[3]);
+  return generateSnippet(args[0], args[1], args[2], args[3] === 'true', args[4]);
 });
