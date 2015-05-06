@@ -2,11 +2,12 @@ var fs = require('hexo-fs');
 var path = require('path');
 var Promise = require('bluebird');
 var nunjucks = require('nunjucks');
+var less = require('less');
 
 var assetBase = path.resolve(__dirname, "./static");
 
 var files = [
-  'style.css',
+  // 'style.css',
   'badge.js',
   'octicons/octicons.css',
   'octicons/octicons.eot',
@@ -15,9 +16,11 @@ var files = [
   'octicons/octicons.woff'
 ];
 
+var styleLess = fs.readFileSync(path.resolve(assetBase, 'style.less'));
+
 hexo.extend.generator.register('hexo-github', function(locals) {
 
-  return files.map(function(f) {
+  var routes = files.map(function(f) {
     var p = 'hexo-github/' + f;
     var filePath = path.resolve(assetBase, f);
 
@@ -27,7 +30,21 @@ hexo.extend.generator.register('hexo-github', function(locals) {
         return fs.createReadStream(filePath);
       }
     }
-  })
+  });
+
+  // Compile style.less on the fly
+  routes.unshift({
+    path: 'hexo-github/style.css',
+    data: function() {
+      return new Promise(function(resolve, reject) {
+        less.render(styleLess)
+        .then(function(output) { resolve(output.css); })
+        .catch(function(e) { reject(e); });
+      });
+    }
+  });
+
+  return routes;
 
 
 });
