@@ -1,5 +1,7 @@
 var fs = require('hexo-fs');
 var path = require('path');
+var Promise = require('bluebird');
+var nunjucks = require('nunjucks');
 
 var assetBase = path.resolve(__dirname, "./static");
 
@@ -42,20 +44,29 @@ function tryParseUrl(url) {
   }
 }
 
-function generateSnippet(user, repo, commit, autoExpand, width) {
-  var id = "badge-container-" + user + "-" + repo + "-" + commit;
-  var src = [
-    '<div id="' + id + '" style="width: ' + (width ? width : '300px') + '"></div>',
-    '<script src="/hexo-github/badge.js"></script>',
-    '<script type="text/javascript">',
-    '  loadStyle("/hexo-github/style.css");',
-    '  loadStyle("/hexo-github/octicons/octicons.css");',
-    '  new Badge("#' + id + '", "' + user + '", "' + repo + '", "' + commit + '", ' + autoExpand + ')',
-    '</script>'
-  ].join("");
-  return src;
-}
+nunjucks.configure(__dirname);
 
 hexo.extend.tag.register('github', function(args) {
-  return generateSnippet(args[0], args[1], args[2], args[3] === 'true', args[4]);
-});
+  var user = args[0],
+    repo = args[1],
+    commit = args[2],
+    autoExpand = args[3] === 'true',
+    id = "badge-container-" + user + "-" + repo + "-" + commit;
+
+  var payload = {
+    user: user,
+    repo: repo,
+    commit: commit,
+    autoExpand: autoExpand,
+    id: id
+  };
+
+  return new Promise(function (resolve, reject) {
+    nunjucks.render('tag.html', payload, function (err, res) {
+      if (err) {
+        return reject(err);
+      }
+      resolve(res);
+    });
+  });
+}, {async: true});
