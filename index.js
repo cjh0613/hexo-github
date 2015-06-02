@@ -61,7 +61,7 @@ function tryParseUrl(url) {
   }
 }
 
-nunjucks.configure(__dirname);
+nunjucks.configure(__dirname, {watch: false});
 
 hexo.extend.tag.register('github', function(args) {
   var user = args[0],
