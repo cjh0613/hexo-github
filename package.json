@@ -1,6 +1,6 @@
 {
   "name": "hexo-github",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Display a GitHub repositoy badge with timeline in your post to keep track of version difference.",
   "main": "index.js",
   "scripts": {
