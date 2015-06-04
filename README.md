@@ -19,7 +19,7 @@ This plugin display a badge with timeline for a GitHub repository that will comp
 Insert `github` tag in your article:
 
 ```markdown
-{% github user repo referenced_commit [auto_expand = true | false] %}
+{% github user repo referenced_commit [auto_expand = true | false] [width = 100%] %}
 ```
 
 Argument | Description
@@ -28,6 +28,7 @@ user     | GitHub user name
 repo     | GitHub repository name of that user
 commit   | Commit sha1 referenced in the article
 auto_expand | (Optional, default == false) true of false. Expand the timeline once synced if set to true.
+width    | (Optional, default == 100%). Widget's width. It should be a valid CSS width value.
 
 Example:
 
@@ -38,4 +39,5 @@ Example:
 ## Known issues & TODO
 
 - [ ] It will not work if referenced commit is not in latest 100 ones
-- [ ] Responsive design
+- [x] Responsive design
+- [ ] Mobile layout

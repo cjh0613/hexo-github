@@ -29,7 +29,7 @@ hexo.extend.generator.register('hexo-github', function(locals) {
       data: function () {
         return fs.createReadStream(filePath);
       }
-    }
+    };
   });
 
   // Compile style.less on the fly
@@ -57,7 +57,7 @@ function tryParseUrl(url) {
     return {
       user: m[1],
       repo: m[2]
-    }
+    };
   }
 }
 
@@ -68,14 +68,16 @@ hexo.extend.tag.register('github', function(args) {
     repo = args[1],
     commit = args[2],
     autoExpand = args[3] === 'true',
-    id = "badge-container-" + user + "-" + repo + "-" + commit;
+    id = "badge-container-" + user + "-" + repo + "-" + commit,
+    width = args[4] ? args[4] : "100%";
 
   var payload = {
     user: user,
     repo: repo,
     commit: commit,
     autoExpand: autoExpand,
-    id: id
+    id: id,
+    width: width
   };
 
   return new Promise(function (resolve, reject) {
